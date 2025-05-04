@@ -2,17 +2,17 @@ import MessageForm from "@/components/MessageForm";
 
 export default async function Home() {
   // 获取 Site Info
-  const siteRes = await fetch("http://127.0.0.1:1337/api/site-info?populate=*");
+  const siteRes = await fetch("https://tailu-master-cms.onrender.com/api/site-info?populate=*");
   const siteData = await siteRes.json();
   const siteAttrs = siteData.data?.attributes || {};
 
   // 获取 Course
-  const courseRes = await fetch("http://127.0.0.1:1337/api/courses?populate=*");
+  const courseRes = await fetch("https://tailu-master-cms.onrender.com/api/courses?populate=*");
   const courseData = await courseRes.json();
   const courses = courseData.data || [];
 
   // 获取 Message
-  const msgRes = await fetch("http://127.0.0.1:1337/api/messages");
+  const msgRes = await fetch("https://tailu-master-cms.onrender.com/api/messages");
   const msgData = await msgRes.json();
   const messages = msgData.data || [];
 
@@ -92,7 +92,7 @@ export default async function Home() {
         {siteAttrs.logo?.data && (
           <div className="z-10 border-8 border-yellow-400 rounded-full bg-white shadow-2xl flex items-center justify-center" style={{ width: 340, height: 340 }}>
             <img
-              src={`http://127.0.0.1:1337${siteAttrs.logo.data.attributes.url}`}
+              src={`https://tailu-master-cms.onrender.com${siteAttrs.logo.data.attributes.url}`}
               alt="logo"
               className="w-full h-full object-cover rounded-full"
             />
@@ -117,7 +117,7 @@ export default async function Home() {
             {siteAttrs.tailupicture.data.slice(0, 2).map((img: any, idx: number) => (
               <img
                 key={img.id || idx}
-                src={`http://127.0.0.1:1337${img.attributes.formats?.medium?.url || img.attributes.url}`}
+                src={`https://tailu-master-cms.onrender.com${img.attributes.formats?.medium?.url || img.attributes.url}`}
                 alt={img.attributes.name || `太律图片${idx+1}`}
                 className="rounded-2xl shadow-xl object-cover w-full h-auto border border-[#e6d2b5]"
               />
@@ -138,7 +138,7 @@ export default async function Home() {
                     controls
                     className="w-full h-80 object-cover rounded"
                   >
-                    <source src={`http://127.0.0.1:1337${v.attributes.url}`} />
+                    <source src={`https://tailu-master-cms.onrender.com${v.attributes.url}`} />
                   </video>
                 </div>
               ) : null
