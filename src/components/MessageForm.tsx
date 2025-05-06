@@ -14,7 +14,7 @@ export default function MessageForm() {
     setError("");
     setSuccess(false);
     try {
-      const res = await fetch("http://127.0.0.1:1337/api/messages", {
+      const res = await fetch("http://8.218.160.47:1337/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { name, content } }),

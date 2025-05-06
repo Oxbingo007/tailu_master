@@ -1,18 +1,27 @@
 import MessageForm from "@/components/MessageForm";
 
+// 定义更具体的类型
+interface BlockChild {
+  text: string;
+}
+interface Block {
+  type: string;
+  children: BlockChild[];
+}
+
 export default async function Home() {
   // 获取 Site Info
-  const siteRes = await fetch("https://tailu-master-cms.onrender.com/api/site-info?populate=*");
+  const siteRes = await fetch("http://8.218.160.47:1337/api/site-info?populate=*");
   const siteData = await siteRes.json();
   const siteAttrs = siteData.data?.attributes || {};
 
   // 获取 Course
-  const courseRes = await fetch("https://tailu-master-cms.onrender.com/api/courses?populate=*");
+  const courseRes = await fetch("http://8.218.160.47:1337/api/courses?populate=*");
   const courseData = await courseRes.json();
   const courses = courseData.data || [];
 
   // 获取 Message
-  const msgRes = await fetch("https://tailu-master-cms.onrender.com/api/messages");
+  const msgRes = await fetch("http://8.218.160.47:1337/api/messages");
   const msgData = await msgRes.json();
   const messages = msgData.data || [];
 
@@ -23,7 +32,7 @@ export default async function Home() {
   const videos = siteAttrs.video?.data || [];
 
   // blocks 富文本渲染函数（优化：特定标题高亮）
-  function renderBlocks(blocks: any[]) {
+  function renderBlocks(blocks: Block[]) {
     if (!Array.isArray(blocks)) return null;
     return blocks.map((block, idx) => {
       // 高亮"源远流长的传统艺术"和"太律能帮助您："
@@ -43,7 +52,7 @@ export default async function Home() {
       if (block.type === "paragraph" && Array.isArray(block.children)) {
         return (
           <p key={idx} className="mb-2">
-            {block.children.map((child: any, cidx: number) => child.text || "").join("")}
+            {block.children.map((child: BlockChild, cidx: number) => child.text || "").join("")}
           </p>
         );
       }
@@ -52,24 +61,33 @@ export default async function Home() {
     });
   }
 
-  function getIconUrl(icon: any) {
+  // getIconUrl 类型细化
+  interface IconData {
+    url?: string;
+    data?: {
+      attributes?: { url?: string };
+      [key: string]: any;
+    } | { attributes?: { url?: string } }[];
+  }
+
+  function getIconUrl(icon: IconData) {
     if (!icon) return "/404.svg";
     // 1. 直接是 { url }
     if (icon.url) {
       if (/^https?:\/\//.test(icon.url)) return icon.url;
-      return `http://localhost:1337${icon.url}`;
+      return `http://8.218.160.47:1337${icon.url}`;
     }
     // 2. Strapi 4 media: { data: { attributes: { url } } }
-    if (icon.data?.attributes?.url) {
-      const url = icon.data.attributes.url;
+    if ((icon.data as any)?.attributes?.url) {
+      const url = (icon.data as any).attributes.url;
       if (/^https?:\/\//.test(url)) return url;
-      return `http://localhost:1337${url}`;
+      return `http://8.218.160.47:1337${url}`;
     }
     // 3. Strapi 4 media array: { data: [ { attributes: { url } } ] }
-    if (Array.isArray(icon.data) && icon.data[0]?.attributes?.url) {
-      const url = icon.data[0].attributes.url;
+    if (Array.isArray((icon.data as any)) && (icon.data as any)[0]?.attributes?.url) {
+      const url = (icon.data as any)[0].attributes.url;
       if (/^https?:\/\//.test(url)) return url;
-      return `http://localhost:1337${url}`;
+      return `http://8.218.160.47:1337${url}`;
     }
     return "/404.svg";
   }
@@ -117,7 +135,7 @@ export default async function Home() {
             {siteAttrs.tailupicture.data.slice(0, 2).map((img: any, idx: number) => (
               <img
                 key={img.id || idx}
-                src={`https://tailu-master-cms.onrender.com${img.attributes.formats?.medium?.url || img.attributes.url}`}
+                src={`http://8.218.160.47:1337${img.attributes.formats?.medium?.url || img.attributes.url}`}
                 alt={img.attributes.name || `太律图片${idx+1}`}
                 className="rounded-2xl shadow-xl object-cover w-full h-auto border border-[#e6d2b5]"
               />
@@ -138,7 +156,7 @@ export default async function Home() {
                     controls
                     className="w-full h-80 object-cover rounded"
                   >
-                    <source src={`https://tailu-master-cms.onrender.com${v.attributes.url}`} />
+                    <source src={`http://8.218.160.47:1337${v.attributes.url}`} />
                   </video>
                 </div>
               ) : null
