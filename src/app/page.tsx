@@ -110,7 +110,7 @@ export default async function Home() {
         {siteAttrs.logo?.data && (
           <div className="z-10 border-8 border-yellow-400 rounded-full bg-white shadow-2xl flex items-center justify-center" style={{ width: 340, height: 340 }}>
             <img
-              src={`https://tailu-master-cms.onrender.com${siteAttrs.logo.data.attributes.url}`}
+              src={`http://8.218.160.47:1337${siteAttrs.logo.data.attributes.url}`}
               alt="logo"
               className="w-full h-full object-cover rounded-full"
             />
